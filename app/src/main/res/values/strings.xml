@@ -1,0 +1,5 @@
+<resources>
+	<string name="app_name">Bcomp</string>
+	<string name="menu">Menu</string>
+	<string name="alu">ALU</string>
+</resources>
