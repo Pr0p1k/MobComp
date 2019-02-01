@@ -7,4 +7,13 @@
 	<string name="address_register">Address register</string>
 	<string name="data_register">Data register</string>
 	<string name="command_register">Command register</string>
+	<string name="program_register">Program counter</string>
+	<string name="address_input">Address input</string>
+	<string name="write">write</string>
+	<string name="read">Read</string>
+	<string name="start">Start</string>
+	<string name="sequel">Continuation</string>
+	<string name="halt">Halt</string>
+	<string name="tact">Tact</string>
+	<string name="accumulator">Accumulator</string>
 </resources>
