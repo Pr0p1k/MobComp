@@ -15,8 +15,8 @@
 				android:id="@+id/memory_view"
 				android:layout_width="80dp"
 				android:layout_height="230dp"
-				app:layout_constraintBottom_toBottomOf="parent"
-				android:layout_marginBottom="132dp"
+				app:layout_constraintTop_toTopOf="parent"
+				android:layout_marginTop="206dp"
 				app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
 				android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
 				style="@style/memoryBlock" app:layout_constraintHorizontal_bias="0.043"/>
@@ -472,6 +472,7 @@
 				android:layout_marginLeft="25dp" android:layout_marginStart="25dp"
 				app:layout_constraintTop_toTopOf="@+id/textView9" android:layout_marginTop="3.6dp"/>
 
+		<!-- TODO Review the constraints -->
 	</android.support.constraint.ConstraintLayout>
 
 	<!-- Container for contents of drawer - use NavigationView to make configuration easier -->
