@@ -449,7 +449,7 @@
 				android:layout_marginStart="28dp"/>
 		<ImageView
 				android:layout_width="11dp"
-				android:layout_height="237dp" app:srcCompat="@drawable/data_pc"
+				android:layout_height="235dp" app:srcCompat="@drawable/data_pc"
 				android:id="@+id/data_pc"
 				app:layout_constraintStart_toEndOf="@+id/memory_view" app:layout_constraintTop_toTopOf="@+id/from_data"
 				android:layout_marginLeft="8dp" android:layout_marginStart="26.5dp"/>
