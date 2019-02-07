@@ -31,6 +31,17 @@
         <item name="android:padding">0dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_marginTop">120dp</item>
+        <item name="android:background">@drawable/just_button</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceButton</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:minWidth">88dip</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+    </style>
+
+    <style name="active_button" parent="console_operations">
+        <item name="android:background">@drawable/active_button</item>
     </style>
 </resources>
 

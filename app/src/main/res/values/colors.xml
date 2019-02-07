@@ -5,4 +5,5 @@
     <color name="colorPrimaryDark">#9dbda5</color>
     <color name="colorBg">#C8DDF2</color>
     <color name="colorAccent">#cf4081</color>
+    <color name="busColor">#808080</color>
 </resources>
