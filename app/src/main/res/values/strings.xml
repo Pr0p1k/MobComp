@@ -18,4 +18,6 @@
 	<string name="accumulator">Accumulator</string>
 	<string name="control_unit">Control unit</string>
 	<string name="command_select">Command selecting</string>
+	<string name="faster">Speed up</string>
+	<string name="slower">Speed down</string>
 </resources>

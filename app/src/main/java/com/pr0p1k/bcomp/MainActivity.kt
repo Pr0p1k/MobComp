@@ -2,6 +2,7 @@ package com.pr0p1k.bcomp
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.widget.DrawerLayout
@@ -17,34 +18,54 @@ import ru.ifmo.cs.bcomp.*
 import java.lang.StringBuilder
 import java.sql.Array
 import java.util.*
+import java.util.concurrent.locks.Lock
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.concurrent.thread
 
 class MainActivity : PanelActivity() {
 
     private lateinit var toolbar: Toolbar
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var memoryView: RecyclerView
-    private lateinit var memoryRows: ArrayList<String>
+    private lateinit var memoryRows: ArrayList<CharSequence>
     private lateinit var memoryRowAdapter: MemoryRowAdapter
     private lateinit var memoryLayoutManager: LinearLayoutManager
     private lateinit var app: ComponentManager
     private var buses = HashMap<ControlSignal, List<ImageView>>()
+    private lateinit var uiHandler: Handler
+    override lateinit var mem: MemoryView
+    private var memTouched = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        app = applicationContext as ComponentManager
 
         toolbar = findViewById(R.id.toolbar)
-        drawerLayout = findViewById(R.id.drawer_layout)
+        drawerLayout = drawer_layout
         memoryRows = ArrayList()
         memoryRowAdapter = MemoryRowAdapter(memoryRows)
         memoryLayoutManager = LinearLayoutManager(this)
 
-        memoryView = findViewById<RecyclerView>(R.id.memory_view).apply {
+        memoryView = memory_view.apply {
             layoutManager = memoryLayoutManager
             adapter = memoryRowAdapter
+        }
+        mem = MemoryView(memoryRows)
+
+        app = applicationContext as ComponentManager
+        app.currentActivity = this
+        app.init()
+
+
+
+        uiHandler = Handler {
+            if (it.what == 0)
+                app.updateView(memTouched)
+            if (memTouched) memoryRowAdapter.notifyItemChanged(app.regs.get(CPU.Reg.ADDR)?.reg?.value ?: 0)
+            memTouched = false
+            return@Handler true
         }
 
         initBuses()
@@ -55,15 +76,18 @@ class MainActivity : PanelActivity() {
 
     private fun initBuses() {
         buses[ControlSignal.KEY_TO_ALU] = listOf(button_alu, left_alu)
-
         buses[ControlSignal.BUF_TO_ADDR] = listOf(from_alu,
                 acc_pc, pc_data, data_command, to_address)
-
         buses[ControlSignal.BUF_TO_IP] = listOf(from_alu, acc_pc, to_pc)
-
         buses[ControlSignal.IP_TO_ALU] = listOf(from_pc, right_alu)
-
         buses[ControlSignal.INSTR_TO_ALU] = listOf(from_command, data_pc, right_alu)
+        buses[ControlSignal.MEMORY_WRITE] = listOf(data_memory, address_memory)
+        buses[ControlSignal.MEMORY_READ] = listOf(memory_data, address_memory)
+        buses[ControlSignal.BUF_TO_ACCUM] = listOf(from_alu, to_acc)
+        buses[ControlSignal.BUF_TO_DATA] = listOf(from_alu, acc_pc, pc_data, to_data)
+        buses[ControlSignal.BUF_TO_INSTR] = listOf(from_alu, acc_pc, pc_data, data_command, to_command)
+        buses[ControlSignal.ACCUM_TO_ALU] = listOf(from_acc, left_alu)
+        buses[ControlSignal.DATA_TO_ALU] = listOf(from_data, data_pc, right_alu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -79,10 +103,37 @@ class MainActivity : PanelActivity() {
         if ((register as TextView).text == "0")
             register.text = "1"
         else register.text = "0"
+        app.updateKeyReg()
     }
 
     fun inputAddress(button: View) {
         app.cmdEnterAddr()
+    }
+
+    override fun getRegisterViews(): Map<CPU.Reg, TextView> {
+        val map = HashMap<CPU.Reg, TextView>()
+        for (reg in CPU.Reg.values()) {
+            when (reg) {
+                CPU.Reg.KEY -> {
+                    map[reg] = KeyRegisterView(this, getKeyBits())
+                }
+                CPU.Reg.STATE -> {
+                }
+                CPU.Reg.ACCUM -> map[reg] = accumulator
+                CPU.Reg.ADDR -> map[reg] = address_register
+                CPU.Reg.DATA -> map[reg] = data_register
+                CPU.Reg.INSTR -> map[reg] = command_register
+                CPU.Reg.IP -> map[reg] = program_register
+            }
+        }
+        return map
+    }
+
+    private fun getKeyBits(): List<TextView> {
+        return listOf(register15, register14, register13, register12,
+                register11, register10, register9, register8,
+                register7, register6, register5, register4,
+                register3, register2, register1, register0)
     }
 
 
@@ -94,11 +145,16 @@ class MainActivity : PanelActivity() {
         app.continuation()
     }
 
+    fun write(button: View) {
+        app.cmdWrite()
+    }
+
     fun halt(button: View) {
         app.halt()
     }
 
     override fun stepStart() {
+        if (app.openBuses.contains(ControlSignal.MEMORY_WRITE)) memTouched = true
         drawOpenBuses(false)
     }
 
@@ -121,6 +177,22 @@ class MainActivity : PanelActivity() {
 
     override fun stepFinish() {
         drawOpenBuses()
+        updateView()
+    }
+
+    /**
+     * Updates all the registers after a step
+     */
+    override fun updateView() {
+        uiHandler.sendEmptyMessage(0)
+    }
+
+    fun faster(button: View) {
+        app.setSpeed(true)
+    }
+
+    fun slower(button: View) {
+        app.setSpeed(false)
     }
 
     fun tact(button: View) {
@@ -145,7 +217,7 @@ class MainActivity : PanelActivity() {
         app.currentActivity = this
     }
 
-    class MemoryRowAdapter(private val memoryRows: ArrayList<String>) : RecyclerView.Adapter<MemoryRowAdapter.MemoryRowHolder>() {
+    class MemoryRowAdapter(private val memoryRows: ArrayList<CharSequence>) : RecyclerView.Adapter<MemoryRowAdapter.MemoryRowHolder>() {
 
         class MemoryRowHolder(var layout: RelativeLayout) : RecyclerView.ViewHolder(layout)
 
