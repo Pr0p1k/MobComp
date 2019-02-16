@@ -71,8 +71,8 @@
 				android:layout_marginBottom="8dp" app:layout_constraintVertical_bias="0.117"
 				app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
 				android:layout_marginStart="8dp" app:layout_constraintEnd_toEndOf="parent"
-				android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
-		/>
+				android:layout_marginEnd="3dp" android:layout_marginRight="3dp"
+				android:textColorLink="@android:color/darker_gray"/>
 
 		<TextView
 				android:text=""
@@ -430,7 +430,52 @@
 				android:layout_height="16dp"
 				android:textSize="12sp"
 				android:gravity="center"
-				android:id="@+id/textView12" app:layout_constraintStart_toStartOf="@+id/control_block"
+				android:id="@+id/command_select" app:layout_constraintStart_toStartOf="@+id/control_block"
+				app:layout_constraintTop_toTopOf="@+id/control_block"/>
+		<TextView
+				android:text="@string/address_select"
+				android:layout_width="160dp"
+				android:layout_height="16dp"
+				android:textSize="12sp"
+				android:gravity="center"
+				android:id="@+id/address_select" app:layout_constraintStart_toStartOf="@+id/control_block"
+				android:layout_marginTop="16dp"
+				app:layout_constraintTop_toTopOf="@+id/control_block"/>
+		<TextView
+				android:text="@string/execution"
+				android:layout_width="160dp"
+				android:layout_height="16dp"
+				android:textSize="12sp"
+				android:gravity="center"
+				android:id="@+id/execution" app:layout_constraintStart_toStartOf="@+id/control_block"
+				android:layout_marginTop="32dp"
+				app:layout_constraintTop_toTopOf="@+id/control_block"/>
+		<TextView
+				android:text="@string/interrupt"
+				android:layout_width="160dp"
+				android:layout_height="16dp"
+				android:textSize="12sp"
+				android:gravity="center"
+				android:id="@+id/interrupt" app:layout_constraintStart_toStartOf="@+id/control_block"
+				android:layout_marginTop="48dp"
+				app:layout_constraintTop_toTopOf="@+id/control_block"/>
+		<TextView
+				android:text="@string/console_operation"
+				android:layout_width="160dp"
+				android:layout_height="16dp"
+				android:textSize="12sp"
+				android:gravity="center"
+				android:id="@+id/console_operation" app:layout_constraintStart_toStartOf="@+id/control_block"
+				android:layout_marginTop="64dp"
+				app:layout_constraintTop_toTopOf="@+id/control_block"/>
+		<TextView
+				android:text="@string/program"
+				android:layout_width="160dp"
+				android:layout_height="16dp"
+				android:textSize="12sp"
+				android:gravity="center"
+				android:id="@+id/program" app:layout_constraintStart_toStartOf="@+id/control_block"
+				android:layout_marginTop="80dp"
 				app:layout_constraintTop_toTopOf="@+id/control_block"/>
 		<ImageView
 				android:layout_width="111dp"

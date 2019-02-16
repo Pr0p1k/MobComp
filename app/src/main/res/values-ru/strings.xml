@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">Bcomp</string>
+	<string name="menu">Меню</string>
+	<string name="alu">АЛУ</string>
+	<string name="memory">Память</string>
+	<string name="button_register">Клавишный регистр</string>
+	<string name="address_register">Регистр адреса</string>
+	<string name="data_register">Регистр данных</string>
+	<string name="command_register">Регистр команд</string>
+	<string name="program_register">Счётчик команд</string>
+	<string name="address_input">Ввод адреса</string>
+	<string name="write">Запись</string>
+	<string name="read">Чтение</string>
+	<string name="start">Пуск</string>
+	<string name="sequel">Продолжение</string>
+	<string name="halt">\???</string>
+	<string name="tact">Такт</string>
+	<string name="accumulator">Аккумулятор</string>
+	<string name="control_unit">Устройство управления</string>
+	<string name="command_select">Выборка команды</string>
+	<string name="faster">Быстрее</string>
+	<string name="slower">Медленнее</string>
+	<string name="address_select">Выборка адреса</string>
+	<string name="execution">Исполнение</string>
+	<string name="interrupt">Прерывание</string>
+	<string name="console_operation">Пультовая операция</string>
+	<string name="program">Программа</string>
+</resources>

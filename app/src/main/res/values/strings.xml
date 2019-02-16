@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name">Bcomp</string>
+	<string name="app_name" translatable="false">Bcomp</string>
 	<string name="menu">Menu</string>
 	<string name="alu">ALU</string>
 	<string name="memory">Memory</string>
@@ -17,7 +17,12 @@
 	<string name="tact">Tact</string>
 	<string name="accumulator">Accumulator</string>
 	<string name="control_unit">Control unit</string>
-	<string name="command_select">Command selecting</string>
+	<string name="command_select">Command selection</string>
 	<string name="faster">Speed up</string>
 	<string name="slower">Speed down</string>
+	<string name="address_select">Address selection</string>
+	<string name="execution">Execution</string>
+	<string name="interrupt">Interrupt</string>
+	<string name="console_operation">Console operation</string>
+	<string name="program">Program</string>
 </resources>

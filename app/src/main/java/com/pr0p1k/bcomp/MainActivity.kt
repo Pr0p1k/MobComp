@@ -37,6 +37,7 @@ class MainActivity : PanelActivity() {
     private lateinit var uiHandler: Handler
     override lateinit var mem: MemoryView
     private var memTouched = false
+    private lateinit var controlUnit: ControlUnitView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +48,7 @@ class MainActivity : PanelActivity() {
         memoryRows = ArrayList()
         memoryRowAdapter = MemoryRowAdapter(memoryRows)
         memoryLayoutManager = LinearLayoutManager(this)
+        initControlUnit()
 
         memoryView = memory_view.apply {
             layoutManager = memoryLayoutManager
@@ -58,13 +60,12 @@ class MainActivity : PanelActivity() {
         app.currentActivity = this
         app.init()
 
-
-
         uiHandler = Handler {
             if (it.what == 0)
                 app.updateView(memTouched)
             if (memTouched) memoryRowAdapter.notifyItemChanged(app.regs.get(CPU.Reg.ADDR)?.reg?.value ?: 0)
             memTouched = false
+            controlUnit.setRunningCycle(app.cpu.runningCycle)
             return@Handler true
         }
 
@@ -72,6 +73,21 @@ class MainActivity : PanelActivity() {
 
         for (i in 0..2047) memoryRows.add(Utils.toHex(0, 16))
         setSupportActionBar(toolbar)
+    }
+
+    private fun initControlUnit() {
+        val map = EnumMap<RunningCycle, TextView>(RunningCycle::class.java)
+        for (value in RunningCycle.values()) {
+            when (value) {
+                RunningCycle.INSTR_FETCH -> map[value] = command_select
+                RunningCycle.ADDR_FETCH -> map[value] = address_select
+                RunningCycle.EXECUTION -> map[value] = execution
+                RunningCycle.INTERRUPT -> map[value] = interrupt
+                RunningCycle.PANEL -> map[value] = console_operation
+                RunningCycle.NONE -> map[value] = program
+            }
+        }
+        controlUnit = ControlUnitView(this, map)
     }
 
     private fun initBuses() {

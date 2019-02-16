@@ -13,7 +13,7 @@ import java.util.*
 
 class ComponentManager : Application {
     private val bcomp = BasicComp(MicroPrograms.getMicroProgram(MicroPrograms.DEFAULT_MICROPROGRAM))
-    private val cpu = bcomp.cpu
+    val cpu = bcomp.cpu
     private var cuswitch = false
     val openBuses = ArrayList<ControlSignal>()
     var currentActivity: PanelActivity? = null
