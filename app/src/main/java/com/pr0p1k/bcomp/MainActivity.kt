@@ -41,7 +41,7 @@ class MainActivity : PanelActivity() {
     private lateinit var uiHandler: Handler
     override lateinit var mem: MemoryView
     private var memTouched = false
-    private lateinit var background: DrawView
+    private lateinit var background: DrawLayout
     private lateinit var controlUnit: ControlUnitView
     private lateinit var busPaint: Paint
     private lateinit var activeBusPaint: Paint
@@ -77,17 +77,10 @@ class MainActivity : PanelActivity() {
             return@Handler true
         }
 
-        initBuses()
-
         for (i in 0..2047) memoryRows.add(Utils.toHex(0, 16))
         setSupportActionBar(toolbar)
         busPaint = Paint()
         busPaint.color = resources.getColor(R.color.busColor)
-        val canvas = Canvas()
-        canvas.drawRect(memoryView.x + memoryView.width, memoryView.y + 200,
-                address_register.x, memoryView.y + 230, busPaint)
-        background.draw(canvas)
-        background.invalidate()
     }
 
     private fun initControlUnit() {
@@ -106,7 +99,40 @@ class MainActivity : PanelActivity() {
     }
 
     private fun initBuses() {
-        // TODO calculate the coords via registers
+        var rects: kotlin.Array<Rect> = arrayOf()
+        for (signal in ControlSignal.values()) {
+            when (signal) {
+                ControlSignal.MEMORY_WRITE -> {
+                    rects = arrayOf(Rect(memory_view.x.toInt() + memory_view.width,
+                            address_register.y.toInt() - 10, address_register.x.toInt(),
+                            address_register.y.toInt() + 10),
+                            Rect(memory_view.x.toInt() + memory_view.width,
+                                    data_register.y.toInt() - 10, address_register.x.toInt(),
+                                    data_register.y.toInt() + 10))
+                }
+
+                ControlSignal.MEMORY_READ -> {
+                    rects = arrayOf(Rect(memory_view.x.toInt() + memory_view.width,
+                            address_register.y.toInt() - 10, address_register.x.toInt(),
+                            address_register.y.toInt() + 10),
+                            Rect(memory_view.x.toInt() + memory_view.width,
+                                    data_register.y.toInt() - 10, address_register.x.toInt(),
+                                    data_register.y.toInt() + 10))
+                }
+                ControlSignal.DATA_TO_ALU -> {
+                    val left = (data_register.x + memoryView.x + memoryView.width).toInt() / 2
+                    rects = arrayOf(Rect(left, data_register.y.toInt() - 10, data_register.x.toInt(),
+                            data_register.y.toInt() + 10), Rect(left, data_register.y.toInt(),
+                            left + 20, pc_label.y.toInt() + 30),
+                            Rect(memoryView.x.toInt() + memoryView.width - 20,
+                                    pc_label.y.toInt() + 10, left, pc_label.y.toInt() + 30),
+                            Rect(memoryView.x.toInt() + memoryView.width - 20, pc_label.y.toInt() + 10,
+                                    memoryView.x.toInt() + memoryView.width, alu_label.y.toInt()))
+                }
+            }
+            buses[signal] = BusView(rects, signal)
+            bg.drawBuses(rects)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -169,7 +195,8 @@ class MainActivity : PanelActivity() {
     }
 
     fun halt(button: View) {
-        app.halt()
+//        app.halt()
+        initBuses()
     }
 
     override fun stepStart() {
