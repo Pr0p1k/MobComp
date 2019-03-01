@@ -1,5 +1,9 @@
 package com.pr0p1k.bcomp
 
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -33,11 +37,14 @@ class MainActivity : PanelActivity() {
     private lateinit var memoryRowAdapter: MemoryRowAdapter
     private lateinit var memoryLayoutManager: LinearLayoutManager
     private lateinit var app: ComponentManager
-    private var buses = HashMap<ControlSignal, List<ImageView>>()
+    private var buses = EnumMap<ControlSignal, BusView>(ControlSignal::class.java)
     private lateinit var uiHandler: Handler
     override lateinit var mem: MemoryView
     private var memTouched = false
+    private lateinit var background: DrawView
     private lateinit var controlUnit: ControlUnitView
+    private lateinit var busPaint: Paint
+    private lateinit var activeBusPaint: Paint
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +55,7 @@ class MainActivity : PanelActivity() {
         memoryRows = ArrayList()
         memoryRowAdapter = MemoryRowAdapter(memoryRows)
         memoryLayoutManager = LinearLayoutManager(this)
+        background = bg
         initControlUnit()
 
         memoryView = memory_view.apply {
@@ -63,7 +71,7 @@ class MainActivity : PanelActivity() {
         uiHandler = Handler {
             if (it.what == 0)
                 app.updateView(memTouched)
-            if (memTouched) memoryRowAdapter.notifyItemChanged(app.regs.get(CPU.Reg.ADDR)?.reg?.value ?: 0)
+            if (memTouched) memoryRowAdapter.notifyItemChanged(app.regs[CPU.Reg.ADDR]?.reg?.value ?: 0)
             memTouched = false
             controlUnit.setRunningCycle(app.cpu.runningCycle)
             return@Handler true
@@ -73,6 +81,13 @@ class MainActivity : PanelActivity() {
 
         for (i in 0..2047) memoryRows.add(Utils.toHex(0, 16))
         setSupportActionBar(toolbar)
+        busPaint = Paint()
+        busPaint.color = resources.getColor(R.color.busColor)
+        val canvas = Canvas()
+        canvas.drawRect(memoryView.x + memoryView.width, memoryView.y + 200,
+                address_register.x, memoryView.y + 230, busPaint)
+        background.draw(canvas)
+        background.invalidate()
     }
 
     private fun initControlUnit() {
@@ -91,19 +106,7 @@ class MainActivity : PanelActivity() {
     }
 
     private fun initBuses() {
-        buses[ControlSignal.KEY_TO_ALU] = listOf(button_alu, left_alu)
-        buses[ControlSignal.BUF_TO_ADDR] = listOf(from_alu,
-                acc_pc, pc_data, data_command, to_address)
-        buses[ControlSignal.BUF_TO_IP] = listOf(from_alu, acc_pc, to_pc)
-        buses[ControlSignal.IP_TO_ALU] = listOf(from_pc, right_alu)
-        buses[ControlSignal.INSTR_TO_ALU] = listOf(from_command, data_pc, right_alu)
-        buses[ControlSignal.MEMORY_WRITE] = listOf(data_memory, address_memory)
-        buses[ControlSignal.MEMORY_READ] = listOf(memory_data, address_memory)
-        buses[ControlSignal.BUF_TO_ACCUM] = listOf(from_alu, to_acc)
-        buses[ControlSignal.BUF_TO_DATA] = listOf(from_alu, acc_pc, pc_data, to_data)
-        buses[ControlSignal.BUF_TO_INSTR] = listOf(from_alu, acc_pc, pc_data, data_command, to_command)
-        buses[ControlSignal.ACCUM_TO_ALU] = listOf(from_acc, left_alu)
-        buses[ControlSignal.DATA_TO_ALU] = listOf(from_data, data_pc, right_alu)
+        // TODO calculate the coords via registers
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -175,20 +178,21 @@ class MainActivity : PanelActivity() {
     }
 
     private fun drawOpenBuses(active: Boolean = true) {
-        for (bus in app.openBuses) {
-            if (active) {
-                for (image in buses[bus] ?: emptyList()) {
-                    DrawableCompat.setTint(
-                            image.drawable, ContextCompat.getColor(this, R.color.colorRed))
-                }
-            } else
-                for (images in buses.values)
-                    for (image in images) {
-                        DrawableCompat.setTint(
-                                image.drawable, ContextCompat.getColor(this, R.color.busColor))
-                    }
-
-        }
+//        for (bus in app.openBuses) {
+//            if (active) {
+//                for (image in buses[bus] ?: emptyList()) {
+//                    DrawableCompat.setTint(
+//                            image.drawable, ContextCompat.getColor(this, R.color.colorRed))
+//                }
+//            } else
+//                for (images in buses.values)
+//                    for (image in images) {
+//                        DrawableCompat.setTint(
+//                                image.drawable, ContextCompat.getColor(this, R.color.busColor))
+//                    }
+//
+//        }
+        // TODO
     }
 
     override fun stepFinish() {
@@ -250,7 +254,6 @@ class MainActivity : PanelActivity() {
             layout.addView(rowNumber)
             layout.addView(rowValue)
             val width = parent?.findViewById<RecyclerView>(R.id.memory_view)?.width ?: 200
-            Log.i("Width: ", "Width = $width")
             (rowValue.layoutParams as RelativeLayout.LayoutParams).setMargins(width / 2, 0, 0, 0)
 
             return MemoryRowHolder(layout)
