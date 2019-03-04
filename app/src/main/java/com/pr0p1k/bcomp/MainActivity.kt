@@ -105,22 +105,21 @@ class MainActivity : PanelActivity() {
         loop@ for (signal in ControlSignal.values()) {
             when (signal) {
                 ControlSignal.MEMORY_WRITE -> {
-                    val toMem = createArrow(memoryView.x + memoryView.width, data_label.y + 20, 4)
-                    val addr = createArrow(memoryView.x + memoryView.width, address_register.y, 4)
                     rects = arrayOf(Rect(memory_view.x.toInt() + memory_view.width + 10,
                             address_register.y.toInt() - 10, address_register.x.toInt(),
                             address_register.y.toInt() + 10),
                             Rect(memory_view.x.toInt() + memory_view.width + 10,
                                     data_label.y.toInt() + 10, address_register.x.toInt(),
-                                    data_label.y.toInt() + 30), addr, toMem)
+                                    data_label.y.toInt() + 30),
+                            createArrow(memoryView.x + memoryView.width, address_register.y, 4),
+                            createArrow(memoryView.x + memoryView.width, data_label.y + 20, 4))
                 }
 
                 ControlSignal.MEMORY_READ -> {
-                    val toData = createArrow(data_register.x, data_register.y + 20, 2)
-                    val addr = createArrow(memoryView.x + memoryView.width, address_register.y, 4)
                     rects = arrayOf(Rect(memory_view.x.toInt() + memory_view.width + 10, address_register.y.toInt() - 10, address_register.x.toInt(), address_register.y.toInt() + 10),
                             Rect(memory_view.x.toInt() + memory_view.width, data_register.y.toInt() + 10, address_register.x.toInt() - 10, data_register.y.toInt() + 30),
-                            toData, addr)
+                            createArrow(data_register.x, data_register.y + 20, 2),
+                            createArrow(memoryView.x + memoryView.width, address_register.y, 4))
                 }
                 ControlSignal.DATA_TO_ALU -> {
                     val left = (data_register.x + memoryView.x + memoryView.width).toInt() / 2
