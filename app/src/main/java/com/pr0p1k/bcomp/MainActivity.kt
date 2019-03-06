@@ -1,6 +1,7 @@
 package com.pr0p1k.bcomp
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
@@ -72,13 +73,13 @@ class MainActivity : PanelActivity() {
         uiHandler = Handler {
             if (it.what == 0)
                 app.updateView(memTouched)
-            if (memTouched) memoryRowAdapter.notifyItemChanged(app.regs[CPU.Reg.ADDR]?.reg?.value ?: 0)
+            if (memTouched) memoryRowAdapter.notifyDataSetChanged()
             memTouched = false
             controlUnit.setRunningCycle(app.cpu.runningCycle)
             return@Handler true
         }
 
-        for (i in 0..2047) memoryRows.add(Utils.toHex(0, 16))
+        for (i in 0..2047) memoryRows.add(Utils.toHex(app.cpu.memory.getValue(i), 16))
         setSupportActionBar(toolbar)
         background.viewTreeObserver.addOnGlobalLayoutListener {
             initBuses()
@@ -291,7 +292,7 @@ class MainActivity : PanelActivity() {
     }
 
     fun openMenu(menuItem: MenuItem) {
-        drawerLayout.openDrawer(Gravity.START)
+        drawer_layout.openDrawer(Gravity.START)
     }
 
     fun invertRegister(register: View) {
@@ -381,6 +382,11 @@ class MainActivity : PanelActivity() {
         app.setSpeed(false)
     }
 
+    fun toAsm(button: View) {
+        val intent = Intent(this, ASMActivity::class.java)
+        startActivity(intent)
+    }
+
     fun tact(button: View) {
         val state = app.invertClockState()
         if (state)
@@ -401,6 +407,8 @@ class MainActivity : PanelActivity() {
     override fun onResume() {
         super.onResume()
         app.currentActivity = this
+        memTouched = true
+        updateView()
     }
 
     class MemoryRowAdapter(private val memoryRows: ArrayList<CharSequence>) : RecyclerView.Adapter<MemoryRowAdapter.MemoryRowHolder>() {

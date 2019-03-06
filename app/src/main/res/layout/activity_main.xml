@@ -424,5 +424,12 @@
 				android:layout_marginTop="120dp"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/button"/>
+		<Button
+				android:text="@string/asm"
+				android:onClick="toAsm"
+				android:layout_marginTop="160dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/to_asm"/>
+
 	</android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

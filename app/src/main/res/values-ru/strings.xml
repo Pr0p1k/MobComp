@@ -26,4 +26,7 @@
 	<string name="interrupt">Прерывание</string>
 	<string name="console_operation">Пультовая операция</string>
 	<string name="program">Программа</string>
+	<string name="compile">Компилировать</string>
+	<string name="asm">Ассемблер</string>
+	<string name="basic">Базовая ЭВМ</string>
 </resources>

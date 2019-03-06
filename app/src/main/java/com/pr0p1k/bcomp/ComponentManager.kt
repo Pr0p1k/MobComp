@@ -19,6 +19,7 @@ class ComponentManager : Application {
     var currentActivity: PanelActivity? = null
     val regs = EnumMap<CPU.Reg, RegisterView>(CPU.Reg::class.java)
     private val delayPeriods = longArrayOf(0, 1, 5, 10, 25, 50, 100, 1000)
+    private var savedDelay = 0
     private var currentDelay = 3
     private var memoryView: MemoryView? = null
 
@@ -136,6 +137,21 @@ class ComponentManager : Application {
             else 0 else if (currentDelay > 0)
             currentDelay - 1 else delayPeriods.size - 1
     }
+
+    fun saveDelay() {
+        savedDelay = currentDelay
+        currentDelay = 0
+    }
+
+    fun restoreDelay() {
+        currentDelay = savedDelay
+    }
+
+
+    fun clearActiveSignals() {
+        openBuses.clear()
+    }
+
 
     inner class SignalHandler(private val signal: ControlSignal) : DataDestination {
 

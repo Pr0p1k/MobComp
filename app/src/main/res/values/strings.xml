@@ -25,4 +25,7 @@
 	<string name="interrupt">Interrupt</string>
 	<string name="console_operation">Console operation</string>
 	<string name="program">Program</string>
+	<string name="compile">compile</string>
+	<string name="asm">Assembler</string>
+	<string name="basic">Basic</string>
 </resources>
