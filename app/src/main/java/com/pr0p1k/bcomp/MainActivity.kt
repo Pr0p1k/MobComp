@@ -124,31 +124,34 @@ class MainActivity : PanelActivity() {
                 }
                 ControlSignal.DATA_TO_ALU -> {
                     val left = (data_register.x + memoryView.x + memoryView.width).toInt() / 2
-                    val top2 = memoryView.y.toInt() + memoryView.height + 20
+                    val top2 = program_register.y.toInt() - 10
                     rects = arrayOf(Rect(left, data_label.y.toInt() + 10, data_register.x.toInt(), data_label.y.toInt() + 30),
                             Rect(left, data_label.y.toInt() + 10, left + 20, top2 + 20),
                             Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, left, top2 + 20),
-                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_label.y.toInt()))
+                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_image.y.toInt() - 10),
+                            createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.KEY_TO_ALU -> {
                     val top = accumulator.y.toInt() - 10
-                    val top2 = memoryView.y.toInt() + memoryView.height + 20
+                    val top2 = program_register.y.toInt() - 10
                     rects = arrayOf(Rect(key_label.x.toInt() + key_label.width - 30, key_label.y.toInt(), key_label.x.toInt() + key_label.width - 10, accumulator.y.toInt() + accumulator.height + 80),
                             Rect(alu_image.x.toInt() - 40, accumulator.y.toInt() + accumulator.height + 60, key_label.x.toInt() + key_label.width - 10, accumulator.y.toInt() + accumulator.height + 80),
                             Rect(alu_image.x.toInt() - 40, top2, alu_image.x.toInt() - 20, top + accumulator.height + 90),
                             Rect(alu_image.x.toInt() - 40, top2, alu_label.x.toInt(), top2 + 20),
-                            Rect(alu_label.x.toInt() - 20, top2, alu_label.x.toInt(), alu_label.y.toInt()))
+                            Rect(alu_label.x.toInt() - 20, top2, alu_label.x.toInt(), alu_image.y.toInt() - 10),
+                            createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.ACCUM_TO_ALU -> {
                     val left = carry.x.toInt() - 60
                     val top = accumulator.y.toInt() - 10
-                    val top2 = memoryView.y.toInt() + memoryView.height + 20
+                    val top2 = program_register.y.toInt() - 10
                     rects = arrayOf(Rect(left, top, carry.x.toInt(), top + 20), // horizontal
                             Rect(left, top, left + 20, top + accumulator.height + 90), // vertical
                             Rect(alu_image.x.toInt() - 40, top + accumulator.height + 70, left, top + accumulator.height + 90), // horizontal
                             Rect(alu_image.x.toInt() - 40, top2, alu_image.x.toInt() - 20, top + accumulator.height + 90),
                             Rect(alu_image.x.toInt() - 40, top2, alu_label.x.toInt(), top2 + 20),
-                            Rect(alu_label.x.toInt() - 20, top2, alu_label.x.toInt(), alu_label.y.toInt())) // vertical
+                            Rect(alu_label.x.toInt() - 20, top2, alu_label.x.toInt(), alu_image.y.toInt() - 10),
+                            createArrow(alu_label.x - 10, alu_image.y + 10, 3))
                 }
                 ControlSignal.BUF_TO_IP -> {
                     val right = carry.x.toInt() - 100
@@ -160,7 +163,8 @@ class MainActivity : PanelActivity() {
                             Rect(right, top, right + 20, top2 + 20),
                             Rect(right, top, right2, top + 20),
                             Rect(right2, program_register.y.toInt() - 10, right2 + 20, top + 20),
-                            Rect(right2 - 40, program_register.y.toInt() - 10, right2, program_register.y.toInt() + 10))
+                            Rect(right2 - 30, program_register.y.toInt() - 10, right2, program_register.y.toInt() + 10),
+                            createArrow(right2.toFloat() - 40, program_register.y, 4))
                 }
                 ControlSignal.BUF_TO_ACCUM -> {
                     val right = carry.x.toInt() - 100
@@ -171,7 +175,8 @@ class MainActivity : PanelActivity() {
                             Rect(alu_label.x.toInt(), top2, right, top2 + 20),
                             Rect(right, top, right + 20, top2 + 20),
                             Rect(right, top, right2, top + 20),
-                            Rect(right2, top, right2 + 20, acc_label.y.toInt()))
+                            Rect(right2, top, right2 + 20, acc_label.y.toInt() - 10),
+                            createArrow(right2.toFloat() + 10, acc_label.y, 3))
                 }
                 ControlSignal.BUF_TO_DATA -> {
                     val right = carry.x.toInt() - 100
@@ -187,7 +192,8 @@ class MainActivity : PanelActivity() {
                             Rect(right3, data_register.y.toInt() - 10, right3 + 20, program_register.y.toInt() + 10),
                             Rect(right2, program_register.y.toInt() - 10, right2 + 20, top + 20),
                             Rect(right2 - 40, data_register.y.toInt() - 10, right2, data_register.y.toInt() + 10),
-                            Rect(right3 - 40, data_register.y.toInt() - 10, right3, data_register.y.toInt() + 10))
+                            Rect(right3 - 30, data_register.y.toInt() - 10, right3, data_register.y.toInt() + 10),
+                            createArrow(right3.toFloat() - 40, data_register.y, 4))
                 }
                 ControlSignal.BUF_TO_INSTR -> {
                     val right = carry.x.toInt() - 100
@@ -203,21 +209,24 @@ class MainActivity : PanelActivity() {
                             Rect(right2, program_register.y.toInt() - 10, right3, program_register.y.toInt() + 10),
                             Rect(right3, command_register.y.toInt() - 10, right3 + 20, program_register.y.toInt() + 10),
                             Rect(right2 - 40, command_register.y.toInt() - 10, right2, command_register.y.toInt() + 10),
-                            Rect(right3 - 40, command_register.y.toInt() - 10, right3, command_register.y.toInt() + 10))
+                            Rect(right3 - 30, command_register.y.toInt() - 10, right3, command_register.y.toInt() + 10),
+                            createArrow(right3.toFloat() - 40, command_register.y, 4))
                 }
                 ControlSignal.INSTR_TO_ALU -> {
                     val left = (data_register.x + memoryView.x + memoryView.width).toInt() / 2
-                    val top2 = memoryView.y.toInt() + memoryView.height + 20
+                    val top2 = program_register.y.toInt() - 10
                     rects = arrayOf(Rect(left, command_register.y.toInt() - 10, command_register.x.toInt(), command_register.y.toInt() + 10),
                             Rect(left, command_register.y.toInt(), left + 20, top2 + 20),
                             Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, left, top2 + 20),
-                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_label.y.toInt()))
+                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_image.y.toInt() - 10),
+                            createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.IP_TO_ALU -> {
                     val left = alu_image.x.toInt() + alu_image.width / 2 + 20
-                    val top2 = memoryView.y.toInt() + memoryView.height + 20
+                    val top2 = program_register.y.toInt() - 10
                     rects = arrayOf(Rect(left, top2, program_register.x.toInt(), top2 + 20),
-                            Rect(left, top2, left + 20, alu_label.top))
+                            Rect(left, top2, left + 20, alu_image.y.toInt() - 10),
+                            createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.BUF_TO_ADDR -> {
                     val right = carry.x.toInt() - 100
@@ -232,7 +241,8 @@ class MainActivity : PanelActivity() {
                             Rect(right2, program_register.y.toInt() - 10, right3, program_register.y.toInt() + 10),
                             Rect(right3, address_register.y.toInt() - 10, right3 + 20, program_register.y.toInt() + 10),
                             Rect(right2, program_register.y.toInt() - 10, right2 + 20, top + 20),
-                            Rect(right2 - 40, address_register.y.toInt() - 10, right3, address_register.y.toInt() + 10))
+                            Rect(right2 - 30, address_register.y.toInt() - 10, right3, address_register.y.toInt() + 10),
+                            createArrow(address_register.x + address_register.width, address_register.y, 4))
                 }
                 else -> continue@loop
             }

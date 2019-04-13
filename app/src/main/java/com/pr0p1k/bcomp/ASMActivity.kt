@@ -3,6 +3,10 @@ package com.pr0p1k.bcomp
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
+import android.text.Editable
+import android.text.SpannableStringBuilder
+import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -29,9 +33,10 @@ class ASMActivity : PanelActivity() {
         app.init()
         cpu = app.cpu
         asm = Assembler(cpu.instructionSet)
-
         setContentView(R.layout.activity_asm)
         setSupportActionBar(toolbar)
+
+        asm_code.text.insert(0, app.asmCode)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,7 +64,7 @@ class ASMActivity : PanelActivity() {
 
     fun compile(button: View) {
         if (cpu.isRunning()) {
-            errorLabel.text = "Для компиляции остановите выполняющуюся программу"
+            errorLabel.text = "Для компиляции остановите выполняющуюся программу" //TODO resource
             return
         }
 
@@ -102,4 +107,10 @@ class ASMActivity : PanelActivity() {
     fun toAsm(button: View) {
         // do nothing lol
     }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        app.asmCode = asm_code.text.toString()
+        super.onSaveInstanceState(outState)
+    }
+
 }
