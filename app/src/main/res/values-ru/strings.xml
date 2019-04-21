@@ -14,7 +14,7 @@
 	<string name="read">Чтение</string>
 	<string name="start">Пуск</string>
 	<string name="sequel">Продолжение</string>
-	<string name="halt">\???</string>
+	<string name="work">Работа</string>
 	<string name="tact">Такт</string>
 	<string name="accumulator">Аккумулятор</string>
 	<string name="control_unit">Устройство управления</string>

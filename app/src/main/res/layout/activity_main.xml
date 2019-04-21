@@ -280,7 +280,7 @@
 				app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="4dp"
 				android:layout_marginStart="4dp"/>
 		<Button
-				android:text="@string/halt"
+				android:text="@string/work"
 				android:layout_width="105dp"
 				style="@style/console_operations"
 				android:id="@+id/halt"

@@ -13,7 +13,7 @@
 	<string name="read">Read</string>
 	<string name="start">Start</string>
 	<string name="sequel">Continuation</string>
-	<string name="halt">Halt</string>
+	<string name="work">Work</string>
 	<string name="tact">Tact</string>
 	<string name="accumulator">Accumulator</string>
 	<string name="control_unit">Control unit</string>
