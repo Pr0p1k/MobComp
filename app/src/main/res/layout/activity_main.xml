@@ -33,8 +33,7 @@
 				android:layout_height="87dp" app:srcCompat="@drawable/alu"
 				android:contentDescription="@string/alu"
 				android:id="@+id/alu_image"
-				app:layout_constraintBottom_toBottomOf="parent"
-				android:layout_marginBottom="15dp"
+				app:layout_constraintTop_toBottomOf="@id/program_register"
 				app:layout_constraintStart_toStartOf="@+id/memory_view"/>
 		<TextView
 				android:text="@string/alu"
@@ -233,13 +232,14 @@
 				app:layout_constraintTop_toBottomOf="@+id/pc_label"/>
 		<Button
 				android:text="@string/address_input"
-				android:layout_width="127dp"
+				android:layout_width="128dp"
 				android:onClick="inputAddress"
 				style="@style/console_operations"
 				android:id="@+id/address_input"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="60dp" app:layout_constraintStart_toStartOf="@+id/key_label"
-				android:layout_marginLeft="0dp" android:layout_marginStart="0dp"/>
+				android:layout_marginTop="60dp"
+				app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"/>
 		<Button
 				android:text="@string/write"
 				android:layout_width="75dp"
@@ -247,16 +247,18 @@
 				android:id="@+id/write"
 				android:onClick="write"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="60dp" app:layout_constraintStart_toStartOf="@+id/key_label"
-				android:layout_marginLeft="128dp" android:layout_marginStart="128dp"/>
+				android:layout_marginTop="60dp"
+				app:layout_constraintStart_toEndOf="@+id/address_input" android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"/>
 		<Button
 				android:text="@string/read"
 				android:layout_width="75dp"
 				style="@style/console_operations"
 				android:id="@+id/read"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="60dp" app:layout_constraintStart_toStartOf="@+id/key_label"
-				android:layout_marginLeft="203dp" android:layout_marginStart="203dp"/>
+				android:layout_marginTop="60dp"
+				app:layout_constraintStart_toEndOf="@+id/write" android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"/>
 		<Button
 				android:text="@string/start"
 				android:layout_width="65dp"
@@ -264,8 +266,9 @@
 				android:id="@+id/start"
 				app:layout_constraintTop_toTopOf="parent"
 				android:onClick="start"
-				android:layout_marginTop="60dp" app:layout_constraintStart_toStartOf="@+id/key_label"
-				android:layout_marginLeft="278dp" android:layout_marginStart="278dp"/>
+				android:layout_marginTop="60dp"
+				app:layout_constraintStart_toEndOf="@+id/read" android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"/>
 		<Button
 				android:text="@string/sequel"
 				android:layout_width="127dp"
@@ -273,17 +276,19 @@
 				android:onClick="continuation"
 				android:id="@+id/sequel"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="90dp" app:layout_constraintStart_toStartOf="@+id/key_label"
-		/>
+				android:layout_marginTop="90dp"
+				app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="4dp"
+				android:layout_marginStart="4dp"/>
 		<Button
 				android:text="@string/halt"
 				android:layout_width="105dp"
 				style="@style/console_operations"
 				android:id="@+id/halt"
-				android:onClick="halt"
+				android:onClick="work"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="90dp" app:layout_constraintStart_toStartOf="@+id/key_label"
-				android:layout_marginLeft="127dp" android:layout_marginStart="127dp"/>
+				android:layout_marginTop="90dp"
+				app:layout_constraintStart_toEndOf="@+id/sequel" android:layout_marginLeft="8dp"
+				android:layout_marginStart="8dp"/>
 		<Button
 				android:text="@string/tact"
 				android:layout_width="105dp"
@@ -291,8 +296,9 @@
 				android:id="@+id/tact"
 				android:onClick="tact"
 				app:layout_constraintTop_toTopOf="parent"
-				android:layout_marginTop="90dp" app:layout_constraintStart_toStartOf="@+id/key_label"
-				android:layout_marginLeft="237dp" android:layout_marginStart="237dp"/>
+				android:layout_marginTop="90dp"
+				app:layout_constraintStart_toEndOf="@+id/halt" android:layout_marginLeft="8dp"
+				android:layout_marginStart="8dp"/>
 
 		<TextView
 				android:text="@string/accumulator"
@@ -424,9 +430,15 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/button"/>
 		<Button
+				android:text="@string/basic"
+				android:onClick="toBasic"
+				android:layout_marginTop="160dp"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/to_basic"/>
+		<Button
 				android:text="@string/asm"
 				android:onClick="toAsm"
-				android:layout_marginTop="160dp"
+				android:layout_marginTop="200dp"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/to_asm"/>
 

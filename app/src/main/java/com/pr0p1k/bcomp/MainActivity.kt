@@ -166,7 +166,7 @@ class MainActivity : PanelActivity() {
                             Rect(right2 - 30, program_register.y.toInt() - 10, right2, program_register.y.toInt() + 10),
                             createArrow(right2.toFloat() - 40, program_register.y, 4))
                 }
-                ControlSignal.BUF_TO_ACCUM -> {
+                ControlSignal.BUF_TO_ACCUM, ControlSignal.BUF_TO_STATE_C -> {
                     val right = carry.x.toInt() - 100
                     val top = (accumulator.y + program_register.y).toInt() / 2 - 20
                     val top2 = accumulator.y.toInt() + accumulator.height + 20
@@ -355,9 +355,12 @@ class MainActivity : PanelActivity() {
         app.cmdWrite()
     }
 
-    fun halt(button: View) {
-        app.halt()
-        initBuses()
+    fun work(button: View) {
+        val state = app.work()
+        if (state)
+            button.background = ContextCompat.getDrawable(this, R.drawable.just_button)
+        else
+            button.background = ContextCompat.getDrawable(this, R.drawable.active_button)
     }
 
     override fun stepStart() {
@@ -395,6 +398,10 @@ class MainActivity : PanelActivity() {
     fun toAsm(button: View) {
         val intent = Intent(this, ASMActivity::class.java)
         startActivity(intent)
+    }
+
+    fun toBasic(button: View) {
+        // do nothing, lol
     }
 
     fun tact(button: View) {

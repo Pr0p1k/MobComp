@@ -23,6 +23,7 @@ class ComponentManager : Application {
     private var savedDelay = 0
     private var currentDelay = 3
     private var memoryView: MemoryView? = null
+    private var runState = true
 
     companion object {
         @JvmStatic
@@ -33,11 +34,11 @@ class ComponentManager : Application {
                 ControlSignal.KEY_TO_ALU, ControlSignal.BUF_TO_ADDR,
                 ControlSignal.BUF_TO_DATA, ControlSignal.BUF_TO_INSTR,
                 ControlSignal.BUF_TO_IP, ControlSignal.BUF_TO_ACCUM,
-                ControlSignal.MEMORY_READ, ControlSignal.MEMORY_WRITE,
-                ControlSignal.INPUT_OUTPUT, ControlSignal.IO0_TSF,
+                ControlSignal.BUF_TO_STATE_C, ControlSignal.MEMORY_READ,
+                ControlSignal.MEMORY_WRITE, ControlSignal.INPUT_OUTPUT,
                 ControlSignal.IO1_OUT, ControlSignal.IO2_TSF,
                 ControlSignal.IO2_IN, ControlSignal.IO3_IN,
-                ControlSignal.IO3_OUT, ControlSignal.IO3_TSF)
+                ControlSignal.IO3_OUT, ControlSignal.IO3_TSF, ControlSignal.IO0_TSF)
     }
 
     constructor() : super() {
@@ -87,8 +88,10 @@ class ComponentManager : Application {
         cpu.startContinue()
     }
 
-    fun halt() {
-        // TODO idk
+    fun work(): Boolean {
+        cpu.invertRunState()
+        runState = runState.not()
+        return runState
     }
 
     fun invertClockState(): Boolean {
@@ -122,7 +125,7 @@ class ComponentManager : Application {
         }
         if (updateMem) {
             val addr: Int = regs[CPU.Reg.ADDR]?.reg?.value ?: 0
-            memoryView?.memoryRows!![addr] = Utils.toHex(regs[CPU.Reg.DATA]?.reg?.value?:0, 16) ?: "0000"
+            memoryView?.memoryRows!![addr] = Utils.toHex(regs[CPU.Reg.DATA]?.reg?.value ?: 0, 16) ?: "0000"
         }
     }
 

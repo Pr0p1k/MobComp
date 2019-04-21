@@ -75,13 +75,13 @@
 		<Button
 				android:text="@string/basic"
 				android:onClick="toBasic"
-				android:layout_marginTop="120dp"
+				android:layout_marginTop="160dp"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/to_basic"/>
 		<Button
 				android:text="@string/asm"
 				android:onClick="toAsm"
-				android:layout_marginTop="160dp"
+				android:layout_marginTop="200dp"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" android:id="@+id/to_asm"/>
 
