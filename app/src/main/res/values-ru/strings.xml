@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Bcomp</string>
 	<string name="menu">Меню</string>
 	<string name="alu">АЛУ</string>
 	<string name="memory">Память</string>
