@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<group android:checkableBehavior="single">
+		<item
+				android:id="@+id/speed_up_button"
+				android:icon="@drawable/shutter"
+				android:title="@string/faster"/>
+		<item
+				android:id="@+id/speed_down_button"
+				android:icon="@drawable/shutter"
+				android:title="@string/slower"/>
+		<item
+				android:id="@+id/to_basic_button"
+				android:icon="@drawable/alu"
+				android:title="@string/basic"/>
+		<item
+				android:id="@+id/to_asm_button"
+				android:icon="@drawable/code"
+				android:onClick="toAsm"
+				android:title="@string/asm"/>
+		<item
+				android:id="@+id/micro_comp"
+				android:icon="@drawable/micro_comp"
+				android:title="@string/micro_comp"/>
+		<item
+				android:id="@+id/external_device"
+				android:icon="@drawable/io"
+				android:title="@string/external_device"/>
+	</group>
+</menu>

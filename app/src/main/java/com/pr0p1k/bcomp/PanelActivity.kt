@@ -7,7 +7,7 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.ifmo.cs.bcomp.CPU
 
-abstract class PanelActivity : AppCompatActivity() {
+abstract class PanelActivity : AppCompatActivity() { // TODO change to fragment
 
     abstract var mem: MemoryView
 

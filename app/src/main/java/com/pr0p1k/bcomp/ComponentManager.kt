@@ -3,6 +3,7 @@ package com.pr0p1k.bcomp
 import android.app.Application
 import android.support.annotation.IntegerRes
 import android.util.Log
+import android.view.MenuItem
 import android.widget.TextView
 import ru.ifmo.cs.bcomp.*
 import ru.ifmo.cs.elements.DataDestination
@@ -22,7 +23,7 @@ class ComponentManager : Application {
     private val delayPeriods = longArrayOf(0, 1, 5, 10, 25, 50, 100, 1000)
     private var savedDelay = 0
     private var currentDelay = 3
-    private var memoryView: MemoryView? = null
+    private lateinit var memoryView: MemoryView
     private var runState = true
 
     companion object {
@@ -64,7 +65,7 @@ class ComponentManager : Application {
 
     fun init() {
         val map = currentActivity?.getRegisterViews()
-        memoryView = currentActivity?.mem
+        memoryView = currentActivity?.mem!!             // TODO
         for (reg in CPU.Reg.values()) {
             when (reg) {
                 CPU.Reg.KEY -> {
@@ -125,8 +126,13 @@ class ComponentManager : Application {
         }
         if (updateMem) {
             val addr: Int = regs[CPU.Reg.ADDR]?.reg?.value ?: 0
-            memoryView?.memoryRows!![addr] = Utils.toHex(regs[CPU.Reg.DATA]?.reg?.value ?: 0, 16) ?: "0000"
+            if (memoryView?.memoryRows?.size > addr)
+                memoryView?.memoryRows!![addr] = Utils.toHex(regs[CPU.Reg.DATA]?.reg?.value ?: 0, 16) ?: "0000"
         }
+    }
+
+    fun openBasic(menu: MenuItem) {
+
     }
 
     fun updateKeyReg() {

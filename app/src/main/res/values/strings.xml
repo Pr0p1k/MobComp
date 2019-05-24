@@ -28,4 +28,6 @@
 	<string name="compile">compile</string>
 	<string name="asm">Assembler</string>
 	<string name="basic">Basic</string>
+	<string name="micro_comp">Micro programm</string>
+	<string name="external_device">External devices</string>
 </resources>

@@ -11,7 +11,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="match_parent" android:background="@color/colorBg">
 
-		<android.support.v7.widget.Toolbar android:id="@+id/toolbar" style="@style/Toolbar"/>
+		<android.support.v7.widget.Toolbar android:id="@+id/app_toolbar" style="@style/Toolbar"/>
 		<TextView
 				android:text="@string/memory"
 				android:layout_width="80dp"
@@ -410,37 +410,14 @@
 		<!-- TODO Review the constraints -->
 	</com.pr0p1k.bcomp.DrawLayout>
 
-	<!-- Container for contents of drawer - use NavigationView to make configuration easier -->
 	<android.support.design.widget.NavigationView
 			android:id="@+id/nav_view"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:layout_gravity="start"
-			android:fitsSystemWindows="true">
-		<Button
-				android:text="@string/faster"
-				android:onClick="faster"
-				android:layout_width="wrap_content"
-				android:layout_marginTop="80dp"
-				android:layout_height="wrap_content" android:id="@+id/button2"/>
-		<Button
-				android:text="@string/slower"
-				android:onClick="slower"
-				android:layout_marginTop="120dp"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:id="@+id/button"/>
-		<Button
-				android:text="@string/basic"
-				android:onClick="toBasic"
-				android:layout_marginTop="160dp"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:id="@+id/to_basic"/>
-		<Button
-				android:text="@string/asm"
-				android:onClick="toAsm"
-				android:layout_marginTop="200dp"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:id="@+id/to_asm"/>
+			android:fitsSystemWindows="true"
+			app:menu="@menu/drawer_menu">
+
 
 	</android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>

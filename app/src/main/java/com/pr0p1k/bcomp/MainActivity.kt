@@ -1,34 +1,24 @@
 package com.pr0p1k.bcomp
 
-import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Rect
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.ContextCompat
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
-import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.widget.*
+import com.pr0p1k.bcomp.R.layout.activity_main
 import kotlinx.android.synthetic.main.activity_main.*
 import ru.ifmo.cs.bcomp.*
-import java.lang.StringBuilder
-import java.sql.Array
 import java.util.*
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.concurrent.thread
 
 class MainActivity : PanelActivity() {
 
@@ -50,9 +40,9 @@ class MainActivity : PanelActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(activity_main)
 
-        toolbar = findViewById(R.id.toolbar)
+        toolbar = app_toolbar
         drawerLayout = drawer_layout
         memoryRows = ArrayList()
         memoryRowAdapter = MemoryRowAdapter(memoryRows)
@@ -101,8 +91,14 @@ class MainActivity : PanelActivity() {
         controlUnit = ControlUnitView(this, map)
     }
 
-    private fun initBuses() {
-        var rects: kotlin.Array<Any>
+    private fun initBuses() { // FIXME это лютое дерьмище, знаю
+        var rects: Array<Any>
+        val accTop = accumulator.y.toInt() - 10
+        val prTop = program_register.y.toInt() - 10
+        val accBottom = accumulator.y.toInt() + accumulator.height + 20
+        val accPrMid = (accumulator.y + program_register.y).toInt() / 2 - 20
+        val carryRight = carry.x.toInt() - 100
+
         loop@ for (signal in ControlSignal.values()) {
             when (signal) {
                 ControlSignal.MEMORY_WRITE -> {
@@ -124,123 +120,102 @@ class MainActivity : PanelActivity() {
                 }
                 ControlSignal.DATA_TO_ALU -> {
                     val left = (data_register.x + memoryView.x + memoryView.width).toInt() / 2
-                    val top2 = program_register.y.toInt() - 10
                     rects = arrayOf(Rect(left, data_label.y.toInt() + 10, data_register.x.toInt(), data_label.y.toInt() + 30),
-                            Rect(left, data_label.y.toInt() + 10, left + 20, top2 + 20),
-                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, left, top2 + 20),
-                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_image.y.toInt() - 10),
+                            Rect(left, data_label.y.toInt() + 10, left + 20, prTop + 20),
+                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, prTop, left, prTop + 20),
+                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, prTop, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_image.y.toInt() - 10),
                             createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.KEY_TO_ALU -> {
-                    val top = accumulator.y.toInt() - 10
                     val top2 = program_register.y.toInt() - 10
-                    rects = arrayOf(Rect(key_label.x.toInt() + key_label.width - 30, key_label.y.toInt(), key_label.x.toInt() + key_label.width - 10, accumulator.y.toInt() + accumulator.height + 80),
-                            Rect(alu_image.x.toInt() - 40, accumulator.y.toInt() + accumulator.height + 60, key_label.x.toInt() + key_label.width - 10, accumulator.y.toInt() + accumulator.height + 80),
-                            Rect(alu_image.x.toInt() - 40, top2, alu_image.x.toInt() - 20, top + accumulator.height + 90),
+                    rects = arrayOf(Rect(key_label.x.toInt() + key_label.width - 30, key_label.y.toInt(), key_label.x.toInt() + key_label.width - 10, accBottom + 60),
+                            Rect(alu_image.x.toInt() - 40, accBottom + 40, key_label.x.toInt() + key_label.width - 10, accBottom + 60),
+                            Rect(alu_image.x.toInt() - 40, top2, alu_image.x.toInt() - 20, accBottom + 70),
                             Rect(alu_image.x.toInt() - 40, top2, alu_label.x.toInt(), top2 + 20),
                             Rect(alu_label.x.toInt() - 20, top2, alu_label.x.toInt(), alu_image.y.toInt() - 10),
                             createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.ACCUM_TO_ALU -> {
                     val left = carry.x.toInt() - 60
-                    val top = accumulator.y.toInt() - 10
-                    val top2 = program_register.y.toInt() - 10
-                    rects = arrayOf(Rect(left, top, carry.x.toInt(), top + 20), // horizontal
-                            Rect(left, top, left + 20, top + accumulator.height + 90), // vertical
-                            Rect(alu_image.x.toInt() - 40, top + accumulator.height + 70, left, top + accumulator.height + 90), // horizontal
-                            Rect(alu_image.x.toInt() - 40, top2, alu_image.x.toInt() - 20, top + accumulator.height + 90),
-                            Rect(alu_image.x.toInt() - 40, top2, alu_label.x.toInt(), top2 + 20),
-                            Rect(alu_label.x.toInt() - 20, top2, alu_label.x.toInt(), alu_image.y.toInt() - 10),
+                    rects = arrayOf(Rect(left, accTop, carry.x.toInt(), accTop + 20), // horizontal
+                            Rect(left, accTop, left + 20, accBottom + 70), // vertical
+                            Rect(alu_image.x.toInt() - 40, accBottom + 50, left, accBottom + 70), // horizontal
+                            Rect(alu_image.x.toInt() - 40, prTop, alu_image.x.toInt() - 20, accBottom + 70),
+                            Rect(alu_image.x.toInt() - 40, prTop, alu_label.x.toInt(), prTop + 20),
+                            Rect(alu_label.x.toInt() - 20, prTop, alu_label.x.toInt(), alu_image.y.toInt() - 10),
                             createArrow(alu_label.x - 10, alu_image.y + 10, 3))
                 }
                 ControlSignal.BUF_TO_IP -> {
-                    val right = carry.x.toInt() - 100
-                    val top = (accumulator.y + program_register.y).toInt() / 2 - 20
-                    val top2 = accumulator.y.toInt() + accumulator.height + 20
                     val right2 = program_register.x.toInt() + program_register.width + 40
-                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, top2),
-                            Rect(alu_label.x.toInt(), top2, right, top2 + 20),
-                            Rect(right, top, right + 20, top2 + 20),
-                            Rect(right, top, right2, top + 20),
-                            Rect(right2, program_register.y.toInt() - 10, right2 + 20, top + 20),
-                            Rect(right2 - 30, program_register.y.toInt() - 10, right2, program_register.y.toInt() + 10),
-                            createArrow(right2.toFloat() - 40, program_register.y, 4))
+                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, accBottom),
+                            Rect(alu_label.x.toInt(), accBottom, carryRight, accBottom + 20),
+                            Rect(carryRight, accPrMid, carryRight + 20, accBottom + 20),
+                            Rect(carryRight, accPrMid, right2, accPrMid + 20),
+                            Rect(right2, prTop, right2 + 20, accPrMid + 20),
+                            Rect(right2 - 30, prTop, right2, prTop + 20),
+                            createArrow(right2 - 40F, prTop + 10F, 4))
                 }
                 ControlSignal.BUF_TO_ACCUM, ControlSignal.BUF_TO_STATE_C -> {
-                    val right = carry.x.toInt() - 100
-                    val top = (accumulator.y + program_register.y).toInt() / 2 - 20
-                    val top2 = accumulator.y.toInt() + accumulator.height + 20
                     val right2 = program_register.x.toInt() + 40
-                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, top2),
-                            Rect(alu_label.x.toInt(), top2, right, top2 + 20),
-                            Rect(right, top, right + 20, top2 + 20),
-                            Rect(right, top, right2, top + 20),
-                            Rect(right2, top, right2 + 20, acc_label.y.toInt() - 10),
+                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, accBottom),
+                            Rect(alu_label.x.toInt(), accBottom, carryRight, accBottom + 20),
+                            Rect(carryRight, accPrMid, carryRight + 20, accBottom + 20),
+                            Rect(carryRight, accPrMid, right2, accPrMid + 20),
+                            Rect(right2, accPrMid, right2 + 20, acc_label.y.toInt() - 10),
                             createArrow(right2.toFloat() + 10, acc_label.y, 3))
                 }
                 ControlSignal.BUF_TO_DATA -> {
-                    val right = carry.x.toInt() - 100
-                    val top = (accumulator.y + program_register.y).toInt() / 2 - 20
-                    val top2 = accumulator.y.toInt() + accumulator.height + 20
                     val right2 = program_register.x.toInt() + program_register.width + 40
                     val right3 = data_register.x.toInt() + data_register.width + 40
-                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, top2),
-                            Rect(alu_label.x.toInt(), top2, right, top2 + 20),
-                            Rect(right, top, right + 20, top2 + 20),
-                            Rect(right, top, right2, top + 20),
-                            Rect(right2, program_register.y.toInt() - 10, right3, program_register.y.toInt() + 10),
-                            Rect(right3, data_register.y.toInt() - 10, right3 + 20, program_register.y.toInt() + 10),
-                            Rect(right2, program_register.y.toInt() - 10, right2 + 20, top + 20),
+                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, accBottom),
+                            Rect(alu_label.x.toInt(), accBottom, carryRight, accBottom + 20),
+                            Rect(carryRight, accPrMid, carryRight + 20, accBottom + 20),
+                            Rect(carryRight, accPrMid, right2, accPrMid + 20),
+                            Rect(right2, prTop, right3, prTop + 20),
+                            Rect(right3, data_register.y.toInt() - 10, right3 + 20, prTop + 20),
+                            Rect(right2, prTop, right2 + 20, accPrMid + 20),
                             Rect(right2 - 40, data_register.y.toInt() - 10, right2, data_register.y.toInt() + 10),
                             Rect(right3 - 30, data_register.y.toInt() - 10, right3, data_register.y.toInt() + 10),
                             createArrow(right3.toFloat() - 40, data_register.y, 4))
                 }
                 ControlSignal.BUF_TO_INSTR -> {
-                    val right = carry.x.toInt() - 100
-                    val top = (accumulator.y + program_register.y).toInt() / 2 - 20
-                    val top2 = accumulator.y.toInt() + accumulator.height + 20
                     val right2 = program_register.x.toInt() + program_register.width + 40
                     val right3 = command_register.x.toInt() + command_register.width + 40
-                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, top2),
-                            Rect(alu_label.x.toInt(), top2, right, top2 + 20),
-                            Rect(right, top, right + 20, top2 + 20),
-                            Rect(right, top, right2, top + 20),
-                            Rect(right2, program_register.y.toInt() - 10, right2 + 20, top + 20),
-                            Rect(right2, program_register.y.toInt() - 10, right3, program_register.y.toInt() + 10),
-                            Rect(right3, command_register.y.toInt() - 10, right3 + 20, program_register.y.toInt() + 10),
+                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, accBottom),
+                            Rect(alu_label.x.toInt(), accBottom, carryRight, accBottom + 20),
+                            Rect(carryRight, accPrMid, carryRight + 20, accBottom + 20),
+                            Rect(carryRight, accPrMid, right2, accPrMid + 20),
+                            Rect(right2, prTop, right2 + 20, accPrMid + 20),
+                            Rect(right2, prTop, right3, prTop + 20),
+                            Rect(right3, command_register.y.toInt() - 10, right3 + 20, prTop + 20),
                             Rect(right2 - 40, command_register.y.toInt() - 10, right2, command_register.y.toInt() + 10),
                             Rect(right3 - 30, command_register.y.toInt() - 10, right3, command_register.y.toInt() + 10),
                             createArrow(right3.toFloat() - 40, command_register.y, 4))
                 }
                 ControlSignal.INSTR_TO_ALU -> {
                     val left = (data_register.x + memoryView.x + memoryView.width).toInt() / 2
-                    val top2 = program_register.y.toInt() - 10
                     rects = arrayOf(Rect(left, command_register.y.toInt() - 10, command_register.x.toInt(), command_register.y.toInt() + 10),
-                            Rect(left, command_register.y.toInt(), left + 20, top2 + 20),
-                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, left, top2 + 20),
-                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, top2, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_image.y.toInt() - 10),
+                            Rect(left, command_register.y.toInt(), left + 20, prTop + 20),
+                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, prTop, left, prTop + 20),
+                            Rect(alu_image.x.toInt() + alu_image.width / 2 + 20, prTop, alu_image.x.toInt() + alu_image.width / 2 + 40, alu_image.y.toInt() - 10),
                             createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.IP_TO_ALU -> {
                     val left = alu_image.x.toInt() + alu_image.width / 2 + 20
-                    val top2 = program_register.y.toInt() - 10
-                    rects = arrayOf(Rect(left, top2, program_register.x.toInt(), top2 + 20),
-                            Rect(left, top2, left + 20, alu_image.y.toInt() - 10),
+                    rects = arrayOf(Rect(left, prTop, program_register.x.toInt(), prTop + 20),
+                            Rect(left, prTop, left + 20, alu_image.y.toInt() - 10),
                             createArrow(alu_image.x + alu_image.width / 2 + 30, alu_image.y + 10, 3))
                 }
                 ControlSignal.BUF_TO_ADDR -> {
-                    val right = carry.x.toInt() - 100
-                    val top = (accumulator.y + program_register.y).toInt() / 2 - 20
-                    val top2 = accumulator.y.toInt() + accumulator.height + 20
                     val right2 = program_register.x.toInt() + program_register.width + 40
                     val right3 = data_register.x.toInt() + data_register.width + 40
-                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, top2),
-                            Rect(alu_label.x.toInt(), top2, right, top2 + 20),
-                            Rect(right, top, right + 20, top2 + 20),
-                            Rect(right, top, right2, top + 20),
-                            Rect(right2, program_register.y.toInt() - 10, right3, program_register.y.toInt() + 10),
-                            Rect(right3, address_register.y.toInt() - 10, right3 + 20, program_register.y.toInt() + 10),
-                            Rect(right2, program_register.y.toInt() - 10, right2 + 20, top + 20),
+                    rects = arrayOf(Rect(alu_label.x.toInt(), alu_label.y.toInt(), alu_label.x.toInt() + 20, accBottom),
+                            Rect(alu_label.x.toInt(), accBottom, carryRight, accBottom + 20),
+                            Rect(carryRight, accPrMid, carryRight + 20, accBottom + 20),
+                            Rect(carryRight, accPrMid, right2, accPrMid + 20),
+                            Rect(right2, prTop, right3, prTop + 20),
+                            Rect(right3, address_register.y.toInt() - 10, right3 + 20, prTop + 20),
+                            Rect(right2, prTop, right2 + 20, accPrMid + 20),
                             Rect(right2 - 30, address_register.y.toInt() - 10, right3, address_register.y.toInt() + 10),
                             createArrow(address_register.x + address_register.width, address_register.y, 4))
                 }
@@ -256,9 +231,9 @@ class MainActivity : PanelActivity() {
      * directions: 1 - up, 2 - right, 3 - down, 4 - left
      */
     private fun createArrow(x: Float, y: Float, direction: Int): Path {
-        var x1 = 0f;
-        var y1 = 0f;
-        var x2 = 0f;
+        var x1 = 0f
+        var y1 = 0f
+        var x2 = 0f
         var y2 = 0f
         when (direction) {
             1 -> {
@@ -395,7 +370,7 @@ class MainActivity : PanelActivity() {
         app.setSpeed(false)
     }
 
-    fun toAsm(button: View) {
+    fun toAsm(menuItem: MenuItem) {
         val intent = Intent(this, ASMActivity::class.java)
         startActivity(intent)
     }
@@ -411,15 +386,6 @@ class MainActivity : PanelActivity() {
         else
             button.background = ContextCompat.getDrawable(this, R.drawable.active_button)
     }
-
-    fun readKeyRegister(): String = StringBuilder().append(getBit(R.id.register15)).append(
-            getBit(R.id.register14)).append(getBit(R.id.register13)).append(getBit(R.id.register12))
-            .append(getBit(R.id.register11)).append(getBit(R.id.register10)).append(getBit(R.id.register9))
-            .append(getBit(R.id.register8)).append(getBit(R.id.register7)).append(getBit(R.id.register6))
-            .append(getBit(R.id.register5)).append(getBit(R.id.register4)).append(getBit(R.id.register3))
-            .append(getBit(R.id.register2)).append(getBit(R.id.register1)).append(getBit(R.id.register0)).toString()
-
-    fun getBit(id: Int) = findViewById<TextView>(id).text[0]
 
     override fun onResume() {
         super.onResume()

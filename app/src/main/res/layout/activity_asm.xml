@@ -15,7 +15,7 @@
 			tools:context=".ASMActivity"
 			android:background="@color/colorBg">
 
-		<android.support.v7.widget.Toolbar android:id="@+id/toolbar" style="@style/Toolbar"/>
+		<android.support.v7.widget.Toolbar android:id="@+id/app_toolbar" style="@style/Toolbar"/>
 
 		<EditText
 				android:id="@+id/asm_code"

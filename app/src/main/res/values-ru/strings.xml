@@ -28,4 +28,6 @@
 	<string name="compile">Компилировать</string>
 	<string name="asm">Ассемблер</string>
 	<string name="basic">Базовая ЭВМ</string>
+	<string name="micro_comp">Работа с МПУ</string>
+	<string name="external_device">Работа с ВУ</string>
 </resources>

@@ -1,12 +1,7 @@
 package com.pr0p1k.bcomp
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.text.Editable
-import android.text.SpannableStringBuilder
-import android.util.Log
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -34,7 +29,7 @@ class ASMActivity : PanelActivity() {
         cpu = app.cpu
         asm = Assembler(cpu.instructionSet)
         setContentView(R.layout.activity_asm)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(app_toolbar)
 
         asm_code.text.insert(0, app.asmCode)
     }
